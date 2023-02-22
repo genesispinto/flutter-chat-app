@@ -12,6 +12,8 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => _ChatPageState();
 }
 
+
+
 class _ChatPageState extends State<ChatPage> {
 
   final _textController = TextEditingController();
@@ -41,7 +43,7 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           Flexible(child: ListView.builder(
-            //reverse: true,
+            reverse: true,
             itemCount: _message.length,
             itemBuilder: ((context, index) => _message[index])
             )
@@ -72,6 +74,8 @@ class _ChatPageState extends State<ChatPage> {
                   setState(() {
                     if(text.trim().isNotEmpty){
                       _writting = true;
+                    } else{
+                       _writting = false;
                     }
                   });
                 }),
@@ -95,7 +99,7 @@ class _ChatPageState extends State<ChatPage> {
                       splashColor: Colors.transparent,
                       icon: const Icon(Icons.send), 
                       onPressed: _writting 
-                      ? () => _handleSubmit(_textController.text)
+                      ? () => _handleSubmit(_textController.text.trim())
                       : null
                         ),
                   )
@@ -107,16 +111,27 @@ class _ChatPageState extends State<ChatPage> {
     }
 
     _handleSubmit(String text){
+
+       if ( text.isEmpty ) return;
+
       final newMessage = ChatMessage(
         texto: text, 
         uid: '1', );
        
-      _message.add(newMessage);
+      _message.insert(0,newMessage);
       setState(() {
         _writting = false;
       });
+
+      
       
       _textController.clear();
       _focusNode.requestFocus();
     }
+
+    @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 }
